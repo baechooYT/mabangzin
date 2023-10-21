@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: '18.x'
       - run: npm install
-      - run: npm run make
+      - run: npm run package
       - uses: actions/upload-artifact@v3
         with:
           name: win32
