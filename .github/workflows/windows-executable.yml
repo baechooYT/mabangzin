@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: '18.x'
       - run: npm install
-      - run: electron-forge make --platform win32
+      - run: npm run make
       - uses: actions/upload-artifact@v3
         with:
           name: win32
