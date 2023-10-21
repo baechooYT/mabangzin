@@ -19,4 +19,4 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: win32
-          path: out/
+          path: out/mabangzin-win32-x64/
