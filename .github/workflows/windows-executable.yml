@@ -6,7 +6,7 @@ on:
 
 jobs:
   upload:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -14,8 +14,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18.x'
-      - run: sudo dpkg --add-architecture i386
-      - run: sudo apt-get install wine1.8
       - run: npm install
       - run: npm run make
       - uses: actions/upload-artifact@v3
