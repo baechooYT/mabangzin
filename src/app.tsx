@@ -8,7 +8,7 @@ const GridItem = styled.input`
   border: 2px solid rgba(0, 0, 0, 0.8);
   height: calc(100% - 1px);
   width: calc(100% - 5px);
-  font-size: calc(4vw + 4vh);
+  font-size: calc(3.5vw + 3.5vh);
   font-stretch: ultra-expanded;
   text-align: center;
 `
