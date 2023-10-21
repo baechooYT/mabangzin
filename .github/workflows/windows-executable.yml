@@ -15,8 +15,6 @@ jobs:
         with:
           node-version: '18.x'
       - run: sudo dpkg --add-architecture i386
-      - run: sudo add-apt-repository ppa:ubuntu-wine/ppa
-      - run: sudo apt-get update
       - run: sudo apt-get install wine1.8
       - run: npm install
       - run: npm run make
