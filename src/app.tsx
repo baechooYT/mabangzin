@@ -140,10 +140,11 @@ const App: React.FC = () => {
 
         if (squareData.length != e.target.size) {
             containerRef.current.style.backgroundColor = "rgb(33, 150, 243)";
+            return;
         }
 
         for (let i = 0; i < squareData.length; i++) {
-            if(!squareData[i] || squareData[i].length != e.target.size){
+            if(!squareData[i] || typeof squareData[i] != "object" || squareData[i].length != e.target.size){
                 containerRef.current.style.backgroundColor = "rgb(33, 150, 243)";
                 return
             }
