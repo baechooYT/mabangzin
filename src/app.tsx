@@ -2,7 +2,11 @@ import * as React from "react";
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
 
-const GridItem = styled.input`
+type SizeAttr = {
+    size?: number
+}
+
+const GridItem = styled.input<SizeAttr>`
   background-color: rgba(255, 255, 255, 0.8);
   border: 2px solid rgba(0, 0, 0, 0.8);
   height: calc(100% - 1px);
@@ -11,7 +15,7 @@ const GridItem = styled.input`
   text-align: center;
 `;
 
-const GridContainer = styled.div`
+const GridContainer = styled.div<SizeAttr>`
   display: grid;
   grid-template-columns: ${({ size }) => `repeat(${size}, 1fr)`};
   background-color: #2196f3;
@@ -29,6 +33,8 @@ const BasicText = styled.a`
   font-size: calc(2vw + 2vh);
   color: white;
 `;
+
+
 
 const App: React.FC = () => {
     useEffect(() => {
