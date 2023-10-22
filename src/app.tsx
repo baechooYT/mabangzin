@@ -64,7 +64,7 @@ const App: React.FC = () => {
 
     return (
         <main>
-            <GridContainer ref={containerRef} size={size}>
+            <GridContainer ref={containerRef} size={Number(size)}>
                 {generateGridItems(Number(size))}
             </GridContainer>
 
