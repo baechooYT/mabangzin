@@ -71,22 +71,33 @@ const App: React.FC = () => {
     };
 
     const isCorrectSquare = (data: [[number]]) => {
-        const usedNums: number[] = []
+        if (data.length != Number(size)) {
+            return false;
+        }
+
         for (let i = 0; i < data.length; i++) {
+            if(!data[i] || typeof data[i] != "object" || data[i].length != Number(size)){
+                return false;
+            }
             for (let j = 0; j < data[i].length; j++) {
-                if(usedNums.find((element) => element == data[i][j])){
-                    return false
-                }else{
-                    usedNums.push(data[i][j])
+                if(!data[i][j] || typeof data[i][j] != "number"){
+                    return false;
                 }
             }
         }
 
+        const usedNums: number[] = []
         let firstRowSum = 0;
         for (let i = 0; i < data.length; i++) {
             let rowSum = 0;
             for (let j = 0; j < data[i].length; j++) {
                 rowSum += data[i][j];
+
+                if(usedNums.find((element) => element == data[i][j])){
+                    return false
+                }else{
+                    usedNums.push(data[i][j])
+                }
             }
 
             if (i === 0) {
@@ -119,6 +130,15 @@ const App: React.FC = () => {
         let diagonalSum = 0
         for (let i = 0; i < data.length; i++) {
             diagonalSum += data[i][i]
+        }
+
+        if (diagonalSum != firstColSum || diagonalSum != firstRowSum){
+            return false
+        }
+
+        let diagonalSum2 = 0
+        for (let i = data.length-1; i > data.length; i--) {
+            diagonalSum2 += data[i][i]
         }
 
         if (diagonalSum != firstColSum || diagonalSum != firstRowSum){
@@ -167,19 +187,58 @@ const App: React.FC = () => {
             containerRef.current.style.backgroundColor = "red";
         }
     }
-
     const generateGridItems = (size: number) => {
         const gridItems = [];
 
         for (let i = 0; i < size * size; i++) {
             gridItems.push(
-                <GridItem key={i} size={size} row={Math.floor(i / size) + 1} col={(i+1)%size == 0 ? size : (i+1)%size} onChange={gridItemChanged} />
+                <GridItem key={i} size={size} row={Math.floor(i / size) + 1} col={(i+1)%size == 0 ? size : (i+1)%size} onChange={gridItemChanged}/>
             );
         }
 
         return gridItems;
     };
 
+    const oddSquareSolve = async () => {
+        const data: any[] = []
+        const squareSize = Number(size)
+        for (let i=0;i<squareSize;i++){
+            data[i] = []
+            for (let j=0;j<squareSize;j++){
+                data[i][j] = 0
+            }
+        }
+
+        let col = (squareSize-1)/2
+        let row = 0
+        data[0][col] = 1
+
+        for (let i=0;i<(squareSize*squareSize)-1;i++){
+            const prevCol = col
+            const prevRow = row
+            row-=1
+            col+=1
+            if (row<=-1){
+                row = squareSize-1
+            }
+            if (col>=squareSize){
+                col = 0
+            }
+
+            if(data[row][col] != 0){
+                row=prevRow+1
+                col=prevCol
+            }
+
+            data[row][col] = i+2
+        }
+
+        const gridContainer = document.getElementById("gridContainer")
+        for(let i=0;i<gridContainer.children.length;i++){
+            (gridContainer.children[i] as any).value = data[Number(gridContainer.children[i].getAttribute("row"))-1][Number(gridContainer.children[i].getAttribute("col"))-1]
+            gridItemChanged({target:gridContainer.children[i]})
+        }
+    }
 
     const getSolveOptions = () => {
         const options = [];
@@ -193,7 +252,7 @@ const App: React.FC = () => {
 
     return (
         <main>
-            <GridContainer ref={containerRef} size={Number(size)}>
+            <GridContainer id="gridContainer" ref={containerRef} size={Number(size)}>
                 {generateGridItems(Number(size))}
             </GridContainer>
 
@@ -201,7 +260,7 @@ const App: React.FC = () => {
             <BasicText> x </BasicText>
             <SizeInput id="size2" value={size} onChange={sizeChange}></SizeInput>
 
-            <BasicButton style={{ float: 'right' }}>풀기</BasicButton>
+            <BasicButton style={{ float: 'right' }} onClick={oddSquareSolve}>풀기</BasicButton>
             <BasicDropdown name="푸는 방법" style={{ float: 'right' }}>
                 {getSolveOptions()}
             </BasicDropdown>
