@@ -64,6 +64,7 @@ const App: React.FC = () => {
     const [squareData, setSquareData] = useState([])
     const sizeChange = (e: any) => {
         setSquareData([])
+        containerRef.current.style.backgroundColor = "rgb(33, 150, 243)";
         const newSize = e.target.value;
         if (!isNaN(newSize) && newSize >= 0 && newSize <= 22) {
             setSize(newSize);
