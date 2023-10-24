@@ -17,7 +17,7 @@ const GridItem = styled.input<GridAttr>`
   border: 2px solid rgba(0, 0, 0, 0.8);
   height: calc(100% - 1px);
   width: calc(100% - 5px);
-  font-size: ${({ size }) => `calc(${22.5/size}vh + ${22.5/size}vh)`};
+  font-size: ${({ size }) => `calc(29vmin / ${size})`};
   text-align: center;
 `;
 
@@ -66,7 +66,7 @@ const App: React.FC = () => {
         setSquareData([])
         containerRef.current.style.backgroundColor = "rgb(33, 150, 243)";
         const newSize = e.target.value;
-        if (!isNaN(newSize) && newSize >= 0 && newSize <= 22) {
+        if (!isNaN(newSize) && newSize >= 0 && newSize <= 54) {
             setSize(newSize);
         }
     };
@@ -177,8 +177,6 @@ const App: React.FC = () => {
             }
         }
 
-        console.log(squareData)
-
         const correctSquare = isCorrectSquare(squareData as [[number]]);
 
         // Set the background color of the GridContainer based on isCorrectSquare result
@@ -192,8 +190,9 @@ const App: React.FC = () => {
         const gridItems = [];
 
         for (let i = 0; i < size * size; i++) {
+            const item = <GridItem key={i} size={size} row={Math.floor(i / size) + 1} col={(i+1)%size == 0 ? size : (i+1)%size} onChange={gridItemChanged}/>
             gridItems.push(
-                <GridItem key={i} size={size} row={Math.floor(i / size) + 1} col={(i+1)%size == 0 ? size : (i+1)%size} onChange={gridItemChanged}/>
+                item
             );
         }
 
