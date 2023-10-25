@@ -240,11 +240,51 @@ const App: React.FC = () => {
         }
     }
 
+    const DoublyEvenSquareSolve = async () => {
+        const data: any[] = []
+        const squareSize = Number(size)
+        for (let i=0;i<squareSize;i++){
+            data[i] = []
+            for (let j=0;j<squareSize;j++){
+                data[i][j] = 0
+            }
+        }
+
+        let i = 1
+        for (let row=0;row<squareSize;row++){
+            for (let col = 0; col < squareSize; col++) {
+                if ((col) % 4 == 0 || (col + 1) % 4 == 0) {
+                    data[row][col] = ((row) % 4 == 0 || (row + 1) % 4 == 0) ? i : (squareSize * squareSize) - i + 1
+                } else {
+                    data[row][col] = ((row) % 4 == 0 || (row + 1) % 4 == 0) ? (squareSize * squareSize) - i + 1 : i
+                }
+                i++
+            }
+        }
+
+        const gridContainer = document.getElementById("gridContainer")
+        for(let i=0;i<gridContainer.children.length;i++){
+            (gridContainer.children[i] as any).value = data[Number(gridContainer.children[i].getAttribute("row"))-1][Number(gridContainer.children[i].getAttribute("col"))-1]
+            gridItemChanged({target:gridContainer.children[i]})
+        }
+    }
+
+    const solve = () => {
+        const solveMethod = document.getElementById("solveMethod")
+        if ((solveMethod as any).value == "홀수 차수"){
+            oddSquareSolve()
+        }else if ((solveMethod as any).value == "4n 마방진"){
+            DoublyEvenSquareSolve()
+        }
+    }
+
     const getSolveOptions = () => {
         const options = [];
 
         if (Number(size) % 2 != 0){
             options.push(<option>홀수 차수</option>)
+        }else if (Number(size) % 4 == 0){
+            options.push(<option>4n 마방진</option>)
         }
 
         return options;
@@ -260,8 +300,8 @@ const App: React.FC = () => {
             <BasicText> x </BasicText>
             <SizeInput id="size2" value={size} onChange={sizeChange}></SizeInput>
 
-            <BasicButton style={{ float: 'right' }} onClick={oddSquareSolve}>풀기</BasicButton>
-            <BasicDropdown name="푸는 방법" style={{ float: 'right' }}>
+            <BasicButton style={{ float: 'right' }} onClick={solve}>풀기</BasicButton>
+            <BasicDropdown id="solveMethod" name="푸는 방법" style={{ float: 'right' }}>
                 {getSolveOptions()}
             </BasicDropdown>
         </main>
