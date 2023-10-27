@@ -269,22 +269,118 @@ const App: React.FC = () => {
         }
     }
 
+    const SinglyEvenSquareSolve = async () => {
+        function fillQuarterOfSinglyEvenOrder(magicSquare: any, firstRow: any, lastRow: any, firstCol: any, lastCol: any, num: any, lastNum: any) {
+            // Initialize position for 1st number:
+            let i = firstRow;
+            let j = Math.floor((lastCol + firstCol)/2);
+
+            // One by one put all values in magic square
+            while(num <= lastNum) {
+                // 4th condition:
+                if (i < firstRow && j >= lastCol) {
+                    i += 2;
+                    j--;
+                }
+                // 2nd condition:
+                // If next number goes to out of square's right side
+                if (j >= lastCol) j = firstCol;
+                // 1st condition:
+                // If next number goes to out of square's upper side
+                if (i < firstRow) i = lastRow - 1;
+                // 3rd condition:
+                if (magicSquare[i][j] !== 0) {
+                    i += 2;
+                    j--;
+                    continue;
+                }
+                else {
+                    // Add num to cell:
+                    magicSquare[i][j] = num;
+                    // Increment num to next one:
+                    num++;
+                }
+                i--;
+                j++;
+            }
+        }
+
+        function exchangeCell(i: any, j: any, matrix: any) {
+            const n = matrix.length;
+            const r = Math.floor(n/2) + i;
+            const temp = matrix[i][j];
+            matrix[i][j] = matrix[r][j];
+            matrix[r][j] = temp;
+        }
+
+        const data: any[] = []
+        const squareSize = Number(size)
+        for (let i=0;i<squareSize;i++){
+            data[i] = []
+            for (let j=0;j<squareSize;j++){
+                data[i][j] = 0
+            }
+        }
+
+        // Top left:
+        fillQuarterOfSinglyEvenOrder(data, 0, squareSize/2, 0, squareSize/2, 1, (squareSize/2)*(squareSize/2));
+        // Bottom right:
+        fillQuarterOfSinglyEvenOrder(data, squareSize/2, squareSize, squareSize/2, squareSize, (squareSize/2)*(squareSize/2) + 1, squareSize*squareSize/2);
+        // Top right:
+        fillQuarterOfSinglyEvenOrder(data, 0, squareSize/2, squareSize/2, squareSize, squareSize*squareSize/2 + 1, 3*(squareSize/2)*(squareSize/2));
+        // Bottom left:
+        fillQuarterOfSinglyEvenOrder(data, squareSize/2, squareSize, 0, squareSize/2, 3*(squareSize/2)*(squareSize/2) + 1, squareSize*squareSize);
+
+        const shiftCol = (squareSize/2 - 1)/2;
+        let i, j;
+        // Exchange columns in left quarters:
+        for (i = 0; i < Math.floor(squareSize/2); i++) {
+            for (j = 0; j < shiftCol; j++) {
+                // If we're at middle row of top left quarter, shift 1 to the right:
+                if (i === Math.floor(squareSize/4)) {
+                    exchangeCell(i, j + shiftCol, data);
+                }
+                else exchangeCell(i, j, data);
+            }
+        }
+        // Exchange columns right quarters if n > 6:
+        for (i = 0; i < Math.floor(squareSize/2); i++) {
+            for (j = squareSize - 1; j > squareSize - shiftCol; j--) {
+                exchangeCell(i, j, data);
+            }
+        }
+
+        const gridContainer = document.getElementById("gridContainer")
+        for(let i=0;i<gridContainer.children.length;i++){
+            (gridContainer.children[i] as any).value = data[Number(gridContainer.children[i].getAttribute("row"))-1][Number(gridContainer.children[i].getAttribute("col"))-1]
+            gridItemChanged({target:gridContainer.children[i]})
+        }
+    }
+
     const solve = () => {
         const solveMethod = document.getElementById("solveMethod")
         if ((solveMethod as any).value == "홀수 차수"){
             oddSquareSolve()
-        }else if ((solveMethod as any).value == "4n 마방진"){
+        }else if ((solveMethod as any).value == "4k 마방진"){
             DoublyEvenSquareSolve()
+        }else if ((solveMethod as any).value == "4k+2 마방진"){
+            SinglyEvenSquareSolve()
         }
     }
 
     const getSolveOptions = () => {
         const options = [];
 
+        if (Number(size) == 2 || Number(size) == 0){
+            return []
+        }
+
         if (Number(size) % 2 != 0){
             options.push(<option>홀수 차수</option>)
         }else if (Number(size) % 4 == 0){
-            options.push(<option>4n 마방진</option>)
+            options.push(<option>4k 마방진</option>)
+        }else if ((Number(size)-2) % 4 == 0){
+            options.push(<option>4k+2 마방진</option>)
         }
 
         return options;
